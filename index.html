@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kanban Board</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script
+      src="https://kit.fontawesome.com/d9edf17dc9.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <header class="toolbox-cont">
+      <div class="row">
+        <div>
+          <h2 class="toolbox-header">Kanban Board</h2>
+          <p class="subText">Organize and prioritize your work</p>
+        </div>
+        <div class="action-btn-cont">
+          <div class="remove-btn">
+            <i class="fa-solid fa-trash"></i> Delete Task
+          </div>
+          <div class="add-btn">
+            <i class="fa-solid fa-plus"> </i> Create Task
+          </div>
+        </div>
+      </div>
+      <div class="toolbox-priority-cont">
+        <div class="all filter-card" priority="all">All Tasks</div>
+        <div class="priority-card-border filter-card" priority="veryHigh">
+          <i class="fa-solid fa-triangle-exclamation"></i> Very High
+        </div>
+        <div class="priority-card-border filter-card" priority="high">
+          <i class="fa-solid fa-circle-exclamation"></i> High
+        </div>
+        <div class="priority-card-border filter-card" priority="medium">
+          <i class="fa-solid fa-clock"></i> Medium
+        </div>
+        <div class="priority-card-border filter-card" priority="low">
+          <i class="fa-solid fa-circle-check"></i> Low
+        </div>
+      </div>
+    </header>
+
+    <main class="main-cont">
+      <div class="empty-state">
+        <img class="emptyImage" src="./server-error.svg" alt="no-tickets" />
+        <p class="subText mb-5">No tickets available</p>
+        <div class="add-btn"><i class="fa-solid fa-plus"> </i> Create Task</div>
+      </div>
+    </main>
+
+    <dialog class="modal">
+      <div class="modal-cont">
+        <div class="heading">
+          <div>
+            <h2>Create New Task</h2>
+            <p class="subText">Add a new task with priority and description</p>
+          </div>
+          <div class="close"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+        <div class="priority">
+          <p class="label">Priority Level</p>
+          <div class="priority-cards">
+            <div class="priority-card priority-card-border" priority="veryHigh">
+              Very high
+            </div>
+            <div class="priority-card priority-card-border" priority="high">
+              High
+            </div>
+            <div class="priority-card priority-card-border" priority="medium">
+              Medium
+            </div>
+            <div class="priority-card priority-card-border" priority="low">
+              Low
+            </div>
+          </div>
+        </div>
+        <div class="task-description">
+          <p class="label">Title</p>
+          <input
+            name="task-description"
+            id="title"
+            placeholder="Enter the detailed task description..."
+            type="text"
+          />
+        </div>
+        <div class="task-description">
+          <p class="label">Task description</p>
+          <textarea
+            name="task-description"
+            id="description"
+            placeholder="Enter the detailed task description..."
+          ></textarea>
+        </div>
+        <div class="dialog-footer">
+          <div class="cancel-btn">Cancel</div>
+          <div class="add-btn" id="create">Create Task</div>
+        </div>
+      </div>
+    </dialog>
+    <script src="main.js"></script>
+  </body>
+</html>
