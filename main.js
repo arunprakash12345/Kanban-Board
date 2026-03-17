@@ -9,7 +9,6 @@ const priorityCards = document.querySelectorAll('.priority-card');
 const filterContainer = document.querySelectorAll(".filter-card");
 const emptyStateContainer = document.querySelector(".empty-state");
 const mainContainer = document.querySelector(".main-cont");
-const deleteButton = document.querySelector(".remove-btn");
 const deleteTicket = document.querySelectorAll(".delete-ticket");
 let filterValue;
 let titleContent;
@@ -129,16 +128,6 @@ function displayFilteredCards(prio) {
 
     });
 }
-
-deleteButton.addEventListener("click", (e) => {
-    const tickets = document.querySelectorAll(".ticket-cont");
-    const length = tickets.length;
-    tickets[length - 1].remove();
-    const updatedTickets = document.querySelectorAll(".ticket-cont");
-    if (updatedTickets.length === 0)
-        emptyStateContainer.style.display = "flex";
-});
-
 
 mainContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("delete-ticket")) {
