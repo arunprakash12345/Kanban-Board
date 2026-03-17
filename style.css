@@ -335,3 +335,11 @@
   .mb-5{
     margin-bottom: 15px;
   }
+  .action-cont{
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+  }
+  .delete-ticket{
+    cursor: pointer;
+  }

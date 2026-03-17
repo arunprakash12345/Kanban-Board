@@ -10,6 +10,7 @@ const filterContainer = document.querySelectorAll(".filter-card");
 const emptyStateContainer = document.querySelector(".empty-state");
 const mainContainer = document.querySelector(".main-cont");
 const deleteButton = document.querySelector(".remove-btn");
+const deleteTicket = document.querySelectorAll(".delete-ticket");
 let filterValue;
 let titleContent;
 let desc;
@@ -97,11 +98,12 @@ function createTask(titleContent, desc) {
     ticket.setAttribute("data-priority", priority);
     ticket.innerHTML = `
     <div class="row">
-          <div class="tag ${priority}">${priorityLabel[priority]}</div>
-          <div class="ticket-lock">
-            <i class="fa-solid fa-lock"></i>
-          </div>
+        <div class="tag ${priority}">${priorityLabel[priority]}</div>
+        <div class="action-cont">
+            <i class="fa-solid fa-lock" id="lock"></i>
+             <i class="fa-solid fa-trash-can delete-ticket"></i>
         </div>
+    </div>
         <div class="ticket-id">${titleContent}</div>
         <div class="ticket-area">
           ${desc}
@@ -135,4 +137,16 @@ deleteButton.addEventListener("click", (e) => {
     const updatedTickets = document.querySelectorAll(".ticket-cont");
     if (updatedTickets.length === 0)
         emptyStateContainer.style.display = "flex";
-})
+});
+
+
+mainContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-ticket")) {
+        const ticket = e.target.closest(".ticket-cont");
+        ticket.remove();
+
+        const updatedTickets = document.querySelectorAll(".ticket-cont");
+        if (updatedTickets.length === 0)
+            emptyStateContainer.style.display = "flex";
+    }
+});
