@@ -13,17 +13,22 @@ const deleteButton = document.querySelector(".remove-btn");
 let filterValue;
 let titleContent;
 let desc;
-let priority;
 const priorityLabel = {
     veryHigh: "Very High",
     high: "High",
     medium: "Medium",
     low: "Low"
 };
+let priority = "veryHigh";
+
 
 addBtn.forEach((btn) => {
     btn.addEventListener("click", () => {
         modal.showModal();
+        priority = "veryHigh";
+        resetCards(priorityCards);
+        priorityCards[0].classList.remove("priority-card-border");
+        priorityCards[0].classList.add("veryHigh");
     });
 });
 
@@ -39,8 +44,9 @@ createTicket.addEventListener("click", () => {
     desc = description.value;
     title.value = "";
     description.value = "";
-    resetCards(priorityCards);
     createTask(titleContent, desc);
+    closeModal();
+
 });
 
 
@@ -48,11 +54,11 @@ priorityCards.forEach((card) => {
     card.addEventListener("click", () => {
         const prio = card.getAttribute("priority");
         if (prio === null) return;
-        resetCards(priorityCards)
+        resetCards(priorityCards);
 
         card.classList.remove("priority-card-border");
         card.classList.add(prio);
-        priority = prio
+        priority = prio;
     });
 });
 

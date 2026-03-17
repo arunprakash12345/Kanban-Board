@@ -85,7 +85,7 @@
     justify-content: space-evenly;
     gap: 1rem;
   }
-  .add-btn{
+  .add-btn,.add-btn1{
     background-color: var(--primary);
     color: white;
     border: none;
@@ -95,7 +95,7 @@
     color: var(--warning);
   }
   .add-btn,
-  .remove-btn, .cancel-btn {
+  .remove-btn, .cancel-btn,.add-btn1 {
     font-size: 1rem; 
     padding: .75rem;
     border-radius: 5px;
