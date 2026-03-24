@@ -9,7 +9,11 @@ const priorityCards = document.querySelectorAll('.priority-card');
 const filterContainer = document.querySelectorAll(".filter-card");
 const emptyStateContainer = document.querySelector(".empty-state");
 const mainContainer = document.querySelector(".main-cont");
+const lanes = document.querySelectorAll(".lane");
 const deleteTicket = document.querySelectorAll(".delete-ticket");
+const lockTicket = document.querySelectorAll(".lock-ticket");
+const editButtons = document.querySelectorAll(".edit-ticket");
+let editingTicket = null;
 let filterValue;
 let titleContent;
 let desc;
@@ -42,9 +46,21 @@ close.addEventListener("click", () => {
 createTicket.addEventListener("click", () => {
     titleContent = title.value;
     desc = description.value;
-    title.value = "";
-    description.value = "";
-    createTask(titleContent, desc);
+    if (editingTicket) {
+        editingTicket.querySelector(".ticket-id").innerText = titleContent;
+        editingTicket.querySelector(".ticket-area").innerText = desc;
+        editingTicket.querySelector(".tag").className = `tag ${priority}`;
+        editingTicket.querySelector(".tag").innerText = priorityLabel[priority];
+        editingTicket.setAttribute("data-priority", priority);
+        moveToLane(editingTicket, priority);
+        editingTicket = null;
+    } else {
+        title.value = "";
+        description.value = "";
+        createTask(titleContent, desc);
+
+    }
+    createTicket.innerText = "Create Task";
     closeModal();
 
 });
@@ -91,7 +107,6 @@ filterContainer.forEach((filterCard) => {
 
 function createTask(titleContent, desc) {
     modal.close();
-    emptyStateContainer.style.display = "none";
     const ticket = document.createElement("div");
     ticket.classList.add("ticket-cont");
     ticket.setAttribute("data-priority", priority);
@@ -99,7 +114,7 @@ function createTask(titleContent, desc) {
     <div class="row">
         <div class="tag ${priority}">${priorityLabel[priority]}</div>
         <div class="action-cont">
-            <i class="fa-solid fa-lock" id="lock"></i>
+            <i class="fas fa-edit" id="edit"></i>
              <i class="fa-solid fa-trash-can delete-ticket"></i>
         </div>
     </div>
@@ -107,7 +122,8 @@ function createTask(titleContent, desc) {
         <div class="ticket-area">
           ${desc}
         </div>`;
-    mainContainer.appendChild(ticket);
+    moveToLane(ticket, priority);
+
 }
 function displayFilteredCards(prio) {
     const tickets = document.querySelectorAll(".ticket-cont");
@@ -139,3 +155,61 @@ mainContainer.addEventListener("click", (e) => {
             emptyStateContainer.style.display = "flex";
     }
 });
+
+mainContainer.addEventListener("click", (e) => {
+    const targetTicket = e.target;
+    const targetParent = targetTicket.closest(".ticket-cont");
+    const inputElem = document.createElement("input");
+    const descElem = document.createElement("textarea");
+    if (targetTicket.classList.contains("lock-ticket")) {
+        if (targetTicket.classList.contains("fa-lock")) {
+            targetTicket.classList.remove("fa-lock");
+            targetTicket.classList.add("fa-lock-open");
+            inputElem.setAttribute("value", titleContent);
+            targetParent.appendChild(inputElem);
+            inputElem.setAttribute("value", desc);
+            targetParent.appendChild(descElem);
+        }
+        else {
+            targetTicket.classList.remove("fa-lock-open");
+            targetTicket.classList.add("fa-lock");
+            titleContent = inputElem.value;
+            console.log(titleContent);
+        }
+
+
+    }
+});
+
+mainContainer.addEventListener("click", (e) => {
+    const editBtn = e.target.closest(".fa-edit");
+
+    if (editBtn) {
+        const ticketElement = editBtn.closest(".ticket-cont");
+        const titleText = ticketElement.querySelector(".ticket-id").innerText;
+        const descText = ticketElement.querySelector(".ticket-area").innerText;
+        const currpriority = ticketElement.getAttribute("data-priority");
+        createTicket.innerText = "Update Task";
+        editingTicket = ticketElement;
+        modal.showModal();
+        title.value = titleText;
+        description.value = descText;
+        resetCards(priorityCards);
+        priorityCards.forEach((cards) => {
+            const prio = cards.getAttribute("priority");
+            if (prio === currpriority) {
+                cards.classList.remove("priority-card-border");
+                cards.classList.add(currpriority);
+            }
+        });
+    }
+});
+
+
+function moveToLane(ticket, priority) {
+    lanes.forEach((lane) => {
+        const lanePriorty = lane.getAttribute("data-lane");
+        if (lanePriorty === priority)
+            lane.appendChild(ticket);
+    });
+}

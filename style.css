@@ -110,7 +110,7 @@
   }
   
   .ticket-cont {
-    width: 24rem;
+    width: 20rem;
     background-color: white;
     border-radius: 10px;
     padding: 1.25rem;
@@ -340,6 +340,39 @@
     justify-content: space-around;
     gap: 16px;
   }
-  .delete-ticket{
+  .delete-ticket,.lock-ticket{
     cursor: pointer;
+  }
+  #edit{
+    cursor: pointer;
+  }
+  #edit:hover{
+    color: #005FFF;
+  }
+  .delete-ticket:hover{
+    color: darkred;
+  }
+
+  .swimlanes{
+    height: 70vh;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+  }
+  .lane{
+    background-color: white;
+    height: 75vh;
+    width: 25%;
+    padding-top: 1rem;
+    border-radius: 5px;
+    border: 0.5px solid #d9d9d9;
+    color: #0E1829;
+    font-size: medium;
+    font-weight: 500;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
   }
