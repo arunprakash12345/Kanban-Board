@@ -137,7 +137,7 @@ function createTaskCard(taskObj) {
     ticket.classList.add("ticket-cont");
     ticket.setAttribute("data-priority", taskObj.priority);
     ticket.setAttribute("data-id", taskObj.id);
-
+    ticket.setAttribute("draggable", true);
     ticket.innerHTML = `
     <div class="row">
         <div class="tag ${taskObj.priority}">
