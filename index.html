@@ -45,13 +45,33 @@
         </div>
       </div>
     </header>
-
+    <div class="toast" id="toastMessage"></div>
     <main class="main-cont">
       <div class="swimlanes">
-        <div class="lane" data-lane="veryHigh">Very High</div>
-        <div class="lane" data-lane="high">High</div>
-        <div class="lane" data-lane="medium">Medium</div>
-        <div class="lane" data-lane="low">Low</div>
+        <div class="lane" data-lane="veryHigh">
+          <div class="lane-header">
+            <span>Very High</span>
+            <span id="veryHighCount"></span>
+          </div>
+        </div>
+        <div class="lane" data-lane="high">
+          <div class="lane-header">
+            <span>High</span>
+            <span id="highCount"></span>
+          </div>
+        </div>
+        <div class="lane" data-lane="medium">
+          <div class="lane-header">
+            <span>Medium</span>
+            <span id="mediumCount"></span>
+          </div>
+        </div>
+        <div class="lane" data-lane="low">
+          <div class="lane-header">
+            <span>Low</span>
+            <span id="lowCount"></span>
+          </div>
+        </div>
       </div>
     </main>
 

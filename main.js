@@ -13,6 +13,8 @@ const lanes = document.querySelectorAll(".lane");
 const deleteTicket = document.querySelectorAll(".delete-ticket");
 const lockTicket = document.querySelectorAll(".lock-ticket");
 const editButtons = document.querySelectorAll(".edit-ticket");
+let ticketsArr = JSON.parse(localStorage.getItem("tickets")) || [];
+const toast = document.getElementById("toastMessage");
 let editingTicket = null;
 let filterValue;
 let titleContent;
@@ -47,11 +49,21 @@ createTicket.addEventListener("click", () => {
     titleContent = title.value;
     desc = description.value;
     if (editingTicket) {
+        const ticketId = Number(editingTicket.getAttribute("data-id"));
         editingTicket.querySelector(".ticket-id").innerText = titleContent;
         editingTicket.querySelector(".ticket-area").innerText = desc;
         editingTicket.querySelector(".tag").className = `tag ${priority}`;
         editingTicket.querySelector(".tag").innerText = priorityLabel[priority];
         editingTicket.setAttribute("data-priority", priority);
+        ticketsArr = ticketsArr.map((task) => {
+            if (task.id === ticketId) {
+                task.title = titleContent;
+                task.desc = desc;
+                task.priority = priority;
+            }
+            return task;
+        });
+        saveToLocalStorage();
         moveToLane(editingTicket, priority);
         editingTicket = null;
     } else {
@@ -62,7 +74,6 @@ createTicket.addEventListener("click", () => {
     }
     createTicket.innerText = "Create Task";
     closeModal();
-
 });
 
 
@@ -107,23 +118,42 @@ filterContainer.forEach((filterCard) => {
 
 function createTask(titleContent, desc) {
     modal.close();
+    const taskObj = {
+        id: Date.now(),
+        title: titleContent,
+        desc: desc,
+        priority: priority
+    }
+    ticketsArr.push(taskObj);
+    saveToLocalStorage();
+    createTaskCard(taskObj);
+    showToast("Task created successfully");
+
+}
+function createTaskCard(taskObj) {
+
     const ticket = document.createElement("div");
+
     ticket.classList.add("ticket-cont");
-    ticket.setAttribute("data-priority", priority);
+    ticket.setAttribute("data-priority", taskObj.priority);
+    ticket.setAttribute("data-id", taskObj.id);
+
     ticket.innerHTML = `
     <div class="row">
-        <div class="tag ${priority}">${priorityLabel[priority]}</div>
+        <div class="tag ${taskObj.priority}">
+            ${priorityLabel[taskObj.priority]}
+        </div>
         <div class="action-cont">
             <i class="fas fa-edit" id="edit"></i>
-             <i class="fa-solid fa-trash-can delete-ticket"></i>
+            <i class="fa-solid fa-trash-can delete-ticket"></i>
         </div>
     </div>
-        <div class="ticket-id">${titleContent}</div>
-        <div class="ticket-area">
-          ${desc}
-        </div>`;
-    moveToLane(ticket, priority);
+    <div class="ticket-id">${taskObj.title}</div>
+    <div class="ticket-area">${taskObj.desc}</div>
+    `;
+    displayTicketCount();
 
+    moveToLane(ticket, taskObj.priority);
 }
 function displayFilteredCards(prio) {
     const tickets = document.querySelectorAll(".ticket-cont");
@@ -148,37 +178,17 @@ function displayFilteredCards(prio) {
 mainContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("delete-ticket")) {
         const ticket = e.target.closest(".ticket-cont");
+        const ticketId = ticket.getAttribute("data-id");
+        ticketsArr = ticketsArr.filter((task) => task.id !== Number(ticketId));
+        saveToLocalStorage();
+        showToast("Task deleted successfully");
         ticket.remove();
-
         const updatedTickets = document.querySelectorAll(".ticket-cont");
         if (updatedTickets.length === 0)
             emptyStateContainer.style.display = "flex";
     }
-});
+    displayTicketCount();
 
-mainContainer.addEventListener("click", (e) => {
-    const targetTicket = e.target;
-    const targetParent = targetTicket.closest(".ticket-cont");
-    const inputElem = document.createElement("input");
-    const descElem = document.createElement("textarea");
-    if (targetTicket.classList.contains("lock-ticket")) {
-        if (targetTicket.classList.contains("fa-lock")) {
-            targetTicket.classList.remove("fa-lock");
-            targetTicket.classList.add("fa-lock-open");
-            inputElem.setAttribute("value", titleContent);
-            targetParent.appendChild(inputElem);
-            inputElem.setAttribute("value", desc);
-            targetParent.appendChild(descElem);
-        }
-        else {
-            targetTicket.classList.remove("fa-lock-open");
-            targetTicket.classList.add("fa-lock");
-            titleContent = inputElem.value;
-            console.log(titleContent);
-        }
-
-
-    }
 });
 
 mainContainer.addEventListener("click", (e) => {
@@ -212,4 +222,37 @@ function moveToLane(ticket, priority) {
         if (lanePriorty === priority)
             lane.appendChild(ticket);
     });
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem("tickets", JSON.stringify(ticketsArr));
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    ticketsArr.forEach((taskObj) => {
+        createTaskCard(taskObj);
+    });
+    displayTicketCount();
+
+});
+
+function displayTicketCount() {
+    const veryHighCount = ticketsArr.filter((ticket) => ticket.priority === "veryHigh").length;
+    const highCount = ticketsArr.filter((ticket) => ticket.priority === "high").length;
+    const mediumCount = ticketsArr.filter((ticket) => ticket.priority === "medium").length;
+    const lowCount = ticketsArr.filter((ticket) => ticket.priority === "low").length;
+    console.log(veryHighCount, highCount, mediumCount, lowCount);
+    document.getElementById("veryHighCount").innerText = "(" + veryHighCount + ")";
+    document.getElementById("highCount").innerText = "(" + highCount + ")";
+    document.getElementById("mediumCount").innerText = "(" + mediumCount + ")";
+    document.getElementById("lowCount").innerText = "(" + lowCount + ")";
+}
+
+function showToast(message) {
+    toast.innerText = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
 }

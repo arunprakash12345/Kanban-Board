@@ -20,9 +20,6 @@
     padding: 0;
     font-family: 'Poppins', sans-serif;
   }
-  body{
-    background-color: #F5F6F8;
-  }
   
   .toolbox-cont {
     display: flex;
@@ -32,7 +29,6 @@
     background: var(--headerBackGroundColor);
     width: 100vw;
     padding: 1.5rem;
-    box-shadow: -8px -8px 7px 3px #888888;
   }
   
   .toolbox-priority-cont {
@@ -361,12 +357,11 @@
     gap: 1rem;
   }
   .lane{
-    background-color: white;
+    background-color: #F7F8F9;
     height: 75vh;
     width: 25%;
     padding-top: 1rem;
     border-radius: 5px;
-    border: 0.5px solid #d9d9d9;
     color: #0E1829;
     font-size: medium;
     font-weight: 500;
@@ -376,3 +371,23 @@
     flex-direction: column;
     gap: 1rem;
   }
+
+
+  .toast{
+    position: fixed;
+    top: 140px;
+    right: 40%;
+    background-color: #0E1829;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show{
+    opacity: 1;
+}
