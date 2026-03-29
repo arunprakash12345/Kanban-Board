@@ -15,6 +15,7 @@ const lockTicket = document.querySelectorAll(".lock-ticket");
 const editButtons = document.querySelectorAll(".edit-ticket");
 let ticketsArr = JSON.parse(localStorage.getItem("tickets")) || [];
 const toast = document.getElementById("toastMessage");
+let draggedTicket = null;
 let editingTicket = null;
 let filterValue;
 let titleContent;
@@ -46,6 +47,8 @@ close.addEventListener("click", () => {
 });
 
 createTicket.addEventListener("click", () => {
+    const descWarning = document.querySelector(".descWarning");
+    const titleWarning = document.querySelector(".titleWarning");
     titleContent = title.value;
     desc = description.value;
     if (editingTicket) {
@@ -69,11 +72,27 @@ createTicket.addEventListener("click", () => {
     } else {
         title.value = "";
         description.value = "";
+        if (titleContent.trim() === "") {
+            titleWarning.style.display = "block";
+        }
+        else {
+            titleWarning.style.display = "none";
+        }
+        if (desc.trim() === "") {
+            descWarning.style.display = "block";
+            return;
+        }
+        else {
+            descWarning.style.display = "none";
+        }
         createTask(titleContent, desc);
+
 
     }
     createTicket.innerText = "Create Task";
     closeModal();
+    titleWarning.style.display = "none";
+    descWarning.style.display = "none";
 });
 
 
@@ -124,11 +143,11 @@ function createTask(titleContent, desc) {
         desc: desc,
         priority: priority
     }
+
     ticketsArr.push(taskObj);
     saveToLocalStorage();
     createTaskCard(taskObj);
     showToast("Task created successfully");
-
 }
 function createTaskCard(taskObj) {
 
@@ -152,8 +171,17 @@ function createTaskCard(taskObj) {
     <div class="ticket-area">${taskObj.desc}</div>
     `;
     displayTicketCount();
-
     moveToLane(ticket, taskObj.priority);
+
+    ticket.addEventListener("dragstart", () => {
+        draggedTicket = ticket;
+        console.log(draggedTicket);
+    });
+
+    ticket.addEventListener("dragend", () => {
+        draggedTicket = null;
+        console.log(draggedTicket);
+    });
 }
 function displayFilteredCards(prio) {
     const tickets = document.querySelectorAll(".ticket-cont");
@@ -241,7 +269,6 @@ function displayTicketCount() {
     const highCount = ticketsArr.filter((ticket) => ticket.priority === "high").length;
     const mediumCount = ticketsArr.filter((ticket) => ticket.priority === "medium").length;
     const lowCount = ticketsArr.filter((ticket) => ticket.priority === "low").length;
-    console.log(veryHighCount, highCount, mediumCount, lowCount);
     document.getElementById("veryHighCount").innerText = "(" + veryHighCount + ")";
     document.getElementById("highCount").innerText = "(" + highCount + ")";
     document.getElementById("mediumCount").innerText = "(" + mediumCount + ")";
@@ -256,3 +283,26 @@ function showToast(message) {
         toast.classList.remove("show");
     }, 2000);
 }
+
+lanes.forEach((lane) => {
+    lane.addEventListener("dragover", (e) => {
+        e.preventDefault();
+    });
+    lane.addEventListener("drop", (e) => {
+        if (!draggedTicket) return;
+        const lanePriority = lane.getAttribute("data-lane");
+        lane.appendChild(draggedTicket);
+        const ticketId = draggedTicket.getAttribute("data-id");
+        draggedTicket.setAttribute("data-priority", lanePriority);
+        const tag = draggedTicket.querySelector(".tag");
+        tag.className = `tag ${lanePriority}`;
+        tag.innerText = priorityLabel[lanePriority];
+        ticketsArr.forEach((task) => {
+            if (task.id == ticketId) {
+                task.priority = lanePriority;
+            }
+        })
+        saveToLocalStorage();
+        displayTicketCount();
+    });
+});

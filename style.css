@@ -392,3 +392,9 @@
 .toast.show{
     opacity: 1;
 }
+.titleWarning, .descWarning{
+  color: var(--warning);
+  font-size: 14px;
+  margin-top: 5px;
+  display: none;
+}
